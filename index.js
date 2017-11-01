@@ -7,8 +7,13 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const async = require('async');
 const requestPromise = require('request-promise');
-const jsontoxml = require('jsontoxml');
 const app = express();
+const commander = require('commander');
+
+commander
+    .version('1.0.0')
+    .option('-p, --port [port]', 'Binds and listens for connections on the specified port [port]', '3000')
+    .parse(process.argv);
 
 const cheerioOptions = {
     normalizeWhitespace: true,
@@ -53,4 +58,4 @@ app.post('/', function(req, res) {
     queue.push(req.body.requests);
 });
 
-app.listen(3000);
+app.listen(commander.port ? parseInt(commander.port) :  3000);
