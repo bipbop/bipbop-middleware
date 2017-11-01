@@ -1,7 +1,7 @@
 /* jshint esversion: 6 */
 
 const BIPBOP_FREE = '6057b71263c21e4ada266c9d4d4da613';
-
+const timeout= 60 * 60 * 1000;
 const cheerio = require('cheerio');
 const express = require('express');
 const bodyParser = require('body-parser');
@@ -9,7 +9,6 @@ const async = require('async');
 const requestPromise = require('request-promise');
 const app = express();
 const commander = require('commander');
-const timeout = require('connect-timeout')
 const compression = require('compression');
 const prettyMs = require('pretty-ms');
 
@@ -60,8 +59,9 @@ app.post('/', function(req, res) {
         res.send($.xml());
     };
 
-    req.setTimeout(60 * 60 * 1000, () => queue.kill());
+    setTimeout(() => queue.kill(), timeout);
     queue.push(req.body.requests);
 });
 
-app.listen(commander.port ? parseInt(commander.port) :  3000);
+const server = app.listen(commander.port ? parseInt(commander.port) :  3000);
+server.timeout = timeout;
