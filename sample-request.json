@@ -1,0 +1,20 @@
+{
+	"threads": 5,
+	"apiKey": "6057b71263c21e4ada266c9d4d4da613",
+	"requests" : [
+		{
+			"form": {
+				"q": "SELECT FROM 'BIPBOPJS'.'CPFCNPJ'",
+				"documento" : "17299408000109"
+			},
+			"id" : "CPFCNPJ-17299408000109"
+		},
+		{
+			"form": {
+				"q": "SELECT FROM 'BIPBOPJS'.'CPFCNPJ'",
+				"documento" : "17279091000149"
+			},
+			"id" : "CPFCNPJ-17279091000149"
+		}
+	]
+}
