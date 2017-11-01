@@ -9,6 +9,9 @@ const async = require('async');
 const requestPromise = require('request-promise');
 const app = express();
 const commander = require('commander');
+const timeout = require('connect-timeout')
+const compression = require('compression');
+const prettyMs = require('pretty-ms');
 
 commander
     .version('1.0.0')
@@ -20,7 +23,9 @@ const cheerioOptions = {
     xmlMode: true
 };
 
+app.use(compression());
 app.use(bodyParser.json());
+
 app.post('/', function(req, res) {
     res.set('Content-Type', 'text/xml');
 
@@ -51,10 +56,11 @@ app.post('/', function(req, res) {
         .finally(() => callback()), req.body.threads || 6);
 
     queue.drain = () => {
-        middleware.attr("elapsed-time-ms", Date.now() - start);
+        middleware.attr("elapsed-time-ms", prettyMs(Date.now() - start));
         res.send($.xml());
     };
 
+    req.setTimeout(60 * 60 * 1000, () => queue.kill());
     queue.push(req.body.requests);
 });
 
