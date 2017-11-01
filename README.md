@@ -69,6 +69,6 @@ curl -H "Content-Type: application/json" -X POST -d @sample-request.json http://
 $ git clone https://github.com/bipbop/bipbop-middleware.git
 $ cd bipbop-middleware
 bipbop-middleware/$ npm install
-bipbop-middleware/$ node index.js
+bipbop-middleware/$ node index.js -p 3000
 bipbop-middleware/$ curl -H "Content-Type: application/json" -X POST -d @sample-request.json http://localhost:3000/
 ```
