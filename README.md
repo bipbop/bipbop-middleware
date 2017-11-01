@@ -10,7 +10,7 @@ Esta aplicação permite o consumo da BIPBOP de forma que apenas uma única requ
 
 ### Exemplo de Requisição ###
 ```
-curl -H "Content-Type: application/json" -X POST -d @sample-request.json http://localhost/
+curl -H "Content-Type: application/json" -X POST -d @sample-request.json http://localhost:3000/
 ```
 
 ### Formato da Requisição ###
@@ -63,4 +63,12 @@ curl -H "Content-Type: application/json" -X POST -d @sample-request.json http://
         </body>
     </BPQL>
 </middleware>
+```
+### TL;DR ###
+```
+$ git clone https://github.com/bipbop/bipbop-middleware.git
+$ cd bipbop-middleware
+bipbop-middleware/$ npm install
+bipbop-middleware/$ node index.js
+bipbop-middleware/$ curl -H "Content-Type: application/json" -X POST -d @sample-request.json http://localhost:3000/
 ```
