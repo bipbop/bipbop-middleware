@@ -57,7 +57,7 @@ app.post('/', function(req, res) {
 
     queue.drain = () => {
         middleware.attr("elapsed-time-ms", prettyMs(Date.now() - start));
-        middleware.attr("jobs", req.body.requests.toString());
+        middleware.attr("jobs", req.body.requests.length.toString());
         res.send($.xml());
     };
 
