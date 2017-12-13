@@ -23,7 +23,8 @@ const cheerioOptions = {
 };
 
 app.use(compression());
-app.use(bodyParser.json());
+app.use(bodyParser.json({limit: '50mb'}));
+app.use(bodyParser.urlencoded({limit: '50mb'}));
 
 app.post('/', function(req, res) {
     res.set('Content-Type', 'text/xml');
