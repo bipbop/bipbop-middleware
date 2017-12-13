@@ -52,7 +52,7 @@ app.post('/', function(req, res) {
             middleware.append($.xml($('*').first().attr("id", task.id)));
         })
         .catch(err => middleware.append($("<error />").attr("id", task.id).text(err.toString())))
-        .finally(() => callback()), req.body.threads || 6);
+        .finally(() => callback()), (req.body.threads || 5) > 10 ? 10 : 5);
 
     queue.drain = () => {
         middleware.attr("elapsed-time-ms", prettyMs(Date.now() - start));
