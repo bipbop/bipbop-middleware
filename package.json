@@ -12,6 +12,7 @@
     "compression": "^1.7.1",
     "connect-timeout": "^1.9.0",
     "express": "^4.16.2",
+    "greenlock-express": "^2.0.12",
     "jsontoxml": "^0.1.0",
     "letsencrypt-express": "^2.0.6",
     "morgan": "^1.9.0",

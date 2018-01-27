@@ -69,8 +69,10 @@ app.post('/', (req, res) => {
   queue.push(req.body.requests);
 });
 
-const server = require('letsencrypt-express').create({
-  // server: 'staging',
+const server = require('greenlock-express').create({
+  server: 'staging',
+  challenges: { 'http-01': require('le-challenge-fs').create({ webrootPath: '/tmp/acme-challenges' }) },
+  store: require('le-store-certbot').create({ webrootPath: '/tmp/acme-challenges' }),
   email: 'tech@bipbop.com.br',
   agreeTos: true,
   approveDomains: ['middleware.bipbop.com.br'],
