@@ -26,7 +26,8 @@ const cheerioOptions = {
 };
 
 app.use(compression());
-app.use(bodyParser.json());
+app.use(bodyParser.json({ limit: '50mb' }));
+app.use(bodyParser.urlencoded({ limit: '50mb' }));
 app.use(morgan('combined'));
 
 app.post('/', (req, res) => {
@@ -56,10 +57,11 @@ app.post('/', (req, res) => {
       middleware.append($request.xml($request('*').first().attr('id', task.id)));
     })
     .catch(err => middleware.append($('<error />').attr('id', task.id).text(err.toString())))
-    .finally(() => callback()), req.body.threads || 6);
+    .finally(() => callback()), (req.body.threads || 5) > 10 ? 10 : 5);
 
   queue.drain = () => {
     middleware.attr('elapsed-time-ms', prettyMs(Date.now() - start));
+    middleware.attr('jobs', req.body.requests.length.toString());
     res.send($.xml());
   };
 
