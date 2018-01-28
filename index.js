@@ -13,8 +13,9 @@ const commander = require('commander');
 const compression = require('compression');
 const prettyMs = require('pretty-ms');
 const morgan = require('morgan');
-const leChallengeFS = require('le-challenge-fs');
-const leStoreCertbot = require('le-store-certbot');
+const http = require('http');
+const https = require('https');
+const fs = require('fs');
 
 commander
   .version('1.0.0')
@@ -71,26 +72,12 @@ app.post('/', (req, res) => {
   queue.push(req.body.requests);
 });
 
-const server = require('greenlock-express').create({
-  server: 'staging',
-  challenges: {
-    'tls-sni-01': leChallengeFS.create({ webrootPath: '~/letsencrypt/var/acme-challenges' }),
-  },
-  store: leStoreCertbot.create({
-    configDir: '/etc/letsencrypt',
-    privkeyPath: ':configDir/live/:hostname/privkey.pem',
-    fullchainPath: ':configDir/live/:hostname/fullchain.pem',
-    certPath: ':configDir/live/:hostname/cert.pem',
-    chainPath: ':configDir/live/:hostname/chain.pem',
-    workDir: '/var/lib/letsencrypt',
-    logsDir: '/var/log/letsencrypt',
-    webrootPath: '~/letsencrypt/srv/www/:hostname/.well-known/acme-challenge',
-    debug: false,
-  }),
-  email: 'tech@bipbop.com.br',
-  agreeTos: true,
-  approveDomains: ['middleware.bipbop.com.br'],
-  app,
-}).listen(commander.port, commander.port.sslPort);
+const httpsServer = https.createServer({
+  key: fs.readFileSync('/etc/letsencrypt/keys/0000_key-certbot.pem'),
+  cert: fs.readFileSync('/etc/letsencrypt/csr/0000_csr-certbot.pem'),
 
-server.timeout = timeout;
+}, app).listen(443);
+const httpServer = http.createServer(app).listen(80);
+
+httpServer.timeout = timeout;
+httpsServer.timeout = timeout;
