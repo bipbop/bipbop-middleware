@@ -75,6 +75,7 @@ app.post('/', (req, res) => {
 const httpsServer = https.createServer({
   key: fs.readFileSync('/etc/letsencrypt/keys/0000_key-certbot.pem'),
   cert: fs.readFileSync('/etc/letsencrypt/csr/0000_csr-certbot.pem'),
+  ca: [fs.readFileSync('/etc/letsencrypt/live/middleware.bipbop.com.br/chain.pem', 'utf-8')],
 
 }, app).listen(443);
 const httpServer = http.createServer(app).listen(80);
