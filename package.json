@@ -14,6 +14,8 @@
     "express": "^4.16.2",
     "greenlock-express": "^2.0.12",
     "jsontoxml": "^0.1.0",
+    "le-challenge-fs": "^2.0.8",
+    "le-store-certbot": "^2.0.5",
     "letsencrypt-express": "^2.0.6",
     "morgan": "^1.9.0",
     "pretty-ms": "^3.0.1",

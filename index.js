@@ -13,6 +13,8 @@ const commander = require('commander');
 const compression = require('compression');
 const prettyMs = require('pretty-ms');
 const morgan = require('morgan');
+const leChallengeFS = require('le-challenge-fs');
+const leStoreCertbot = require('le-store-certbot');
 
 commander
   .version('1.0.0')
@@ -26,8 +28,8 @@ const cheerioOptions = {
 };
 
 app.use(compression());
-app.use(bodyParser.json({ limit: '50mb' }));
-app.use(bodyParser.urlencoded({ limit: '50mb' }));
+app.use(bodyParser.json({ extended: true, limit: '50mb' }));
+app.use(bodyParser.urlencoded({ extended: true, limit: '50mb' }));
 app.use(morgan('combined'));
 
 app.post('/', (req, res) => {
@@ -71,8 +73,20 @@ app.post('/', (req, res) => {
 
 const server = require('greenlock-express').create({
   server: 'staging',
-  challenges: { 'http-01': require('le-challenge-fs').create({ webrootPath: '/tmp/acme-challenges' }) },
-  store: require('le-store-certbot').create({ webrootPath: '/tmp/acme-challenges' }),
+  challenges: {
+    'tls-sni-01': leChallengeFS.create({ webrootPath: '~/letsencrypt/var/acme-challenges' }),
+  },
+  store: leStoreCertbot.create({
+    configDir: '/etc/letsencrypt',
+    privkeyPath: ':configDir/live/:hostname/privkey.pem',
+    fullchainPath: ':configDir/live/:hostname/fullchain.pem',
+    certPath: ':configDir/live/:hostname/cert.pem',
+    chainPath: ':configDir/live/:hostname/chain.pem',
+    workDir: '/var/lib/letsencrypt',
+    logsDir: '/var/log/letsencrypt',
+    webrootPath: '~/letsencrypt/srv/www/:hostname/.well-known/acme-challenge',
+    debug: false,
+  }),
   email: 'tech@bipbop.com.br',
   agreeTos: true,
   approveDomains: ['middleware.bipbop.com.br'],
