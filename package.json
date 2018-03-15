@@ -6,6 +6,7 @@
   "dependencies": {
     "async": "^2.5.0",
     "basic-logger": "^0.4.4",
+    "bluebird": "^3.5.1",
     "body-parser": "^1.18.2",
     "cheerio": "^1.0.0-rc.2",
     "commander": "^2.11.0",

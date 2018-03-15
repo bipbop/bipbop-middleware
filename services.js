@@ -4,6 +4,7 @@ const cheerio = require('cheerio');
 const async = require('async');
 const requestPromise = require('request-promise');
 const prettyMs = require('pretty-ms');
+const Promise = require('bluebird');
 
 const cheerioOptions = {
   normalizeWhitespace: true,
@@ -23,21 +24,25 @@ module.exports = function syncronized(drain) {
     }
 
     const start = Date.now();
-
-    const queue = async.queue((task, callback) => requestPromise({
-      uri: 'https://irql.bipbop.com.br/',
-      method: 'POST',
-      form: Object.assign({}, task.form, {
-        suppressHTTPCode: 'true',
-        apiKey: req.body.apiKey || BIPBOP_FREE,
-      }),
-    })
-      .then((request) => {
-        const $request = cheerio.load(request, cheerioOptions);
-        middleware.append($request.xml($request('*').first().attr('id', task.id)));
-      })
-      .catch(err => middleware.append($('<error />').attr('id', task.id).text(err.toString())))
-      .finally(() => callback()), (req.body.threads || 5) > 10 ? 10 : 5);
+    const threads = parseInt(req.body.threads, 10);
+    const queue = async.queue(
+      (task, callback) => Promise.resolve(requestPromise({
+        uri: 'https://irql.bipbop.com.br/',
+        method: 'POST',
+        form: Object.assign({}, task.form, {
+          suppressHTTPCode: 'true',
+          apiKey: req.body.apiKey || BIPBOP_FREE,
+        }),
+      }))
+        .tap(() => console.log(`Iniciando: ${task.id}`))
+        .then((request) => {
+          const $request = cheerio.load(request, cheerioOptions);
+          middleware.append($request.xml($request('*').first().attr('id', task.id)));
+        })
+        .catch(err => middleware.append($('<error />').attr('id', task.id).text(err.toString())))
+        .finally(() => callback()),
+      (threads || 5) > 20 ? 20 : threads,
+    );
 
     queue.drain = () => {
       middleware.attr('elapsed-time-ms', prettyMs(Date.now() - start));
